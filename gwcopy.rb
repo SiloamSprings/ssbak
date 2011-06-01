@@ -22,30 +22,30 @@ DOMAIN = ""
 #-- END CONFIG --
 
 # setup a logfile with weekly rotation
-@log = Logger.new "/var/log/gwback_ruby", 'weekly'
+log = Logger.new "/var/log/gwback_ruby", 'weekly'
 
-@log.info("starting gwcopy.rb")
+log.info("starting gwcopy.rb")
 
 # check to see if our mount is up
 if (%x{mount} =~ /#{MOUNT}/)
-  @log.info("backup mounts appear to be available, proceeding with backup")
+  log.info("backup mounts appear to be available, proceeding with backup")
   
   # backup the domain
   domlog = %x{#{DBCOPY_DIR}dbcopy /mail/siloamsprings #{BACKUP_DIR}do/}
-  @log.info("DOMAIN BACKUP INFODUMP")
-  @log.info(domlog)
+  log.info("DOMAIN BACKUP INFODUMP")
+  log.info(domlog)
 
   # backup the post office
   polog = %x{#{DBCOPY_DIR}dbcopy /mail/siloamsprings_po/ #{BACKUP_DIR}po/}
-  @log.info("POST OFFICE BACKUP INFODUMP")
-  @log.info(polog)
+  log.info("POST OFFICE BACKUP INFODUMP")
+  log.info(polog)
   
-  @log.info("gwcopy.rb run complete")
+  log.info("gwcopy.rb run complete")
 
 else
   # log the lack of a mountpoint and contact an admin
-  @log.fatal("mountpoint \"#{MOUNT}\" not detected")
-  @log.info("contacting admin at \"#{ADMIN_CONTACT}\"")
+  log.fatal("mountpoint \"#{MOUNT}\" not detected")
+  log.info("contacting admin at \"#{ADMIN_CONTACT}\"")
 
   Pony.mail(:to => ADMIN_CONTACT, :via => :smtp, :smtp => {
     :host     => HOST,
